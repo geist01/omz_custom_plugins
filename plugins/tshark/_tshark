@@ -1,0 +1,32 @@
+#compdef tshark
+
+_tcpdump_interfaces() {
+  local disp expl sep interfaces
+  [[ $OSTYPE != openbsd* ]] &&
+      interfaces=( ${${${${(f)"$(_call_program interfaces tcpdump -D)"}#<->.}//[()]/}/ /:} )
+  if (( $#interfaces )); then
+    _describe -t interfaces 'network interface' interfaces
+  else
+    _description interfaces expl 'network interface'
+    _net_interfaces "$expl[@]"
+    if zstyle -t ":completion:${curcontext}:interfaces" verbose; then
+      zstyle -s ":completion:${curcontext}:interfaces" list-separator sep || sep=--
+      disp=( "any $sep capture on all interfaces" )
+      compadd "$expl[@]" -ld disp any
+    else
+      compadd "$expl[@]" any
+    fi
+  fi
+}
+
+
+_tshark() {
+integer ret=1
+    local -a args
+    args+=(
+        '-i+[specify interface]:interface:_tcpdump_interfaces'
+    )
+    _arguments $args[@] && ret=0
+    return ret
+}
+_tshark

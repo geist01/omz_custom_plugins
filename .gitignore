@@ -1,0 +1,5 @@
+example.zsh
+plugins/example
+plugins/zsh-autosuggestions
+themes/dev.zsh-theme
+themes/example.zsh-theme
